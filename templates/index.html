@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+<main class="container p-5">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>TOTAL</th>
+                <th>Sell</th>
+                <th>Buy</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="4"></td>
+                <td>
+                {% set accumulator = namespace(total=0) %}
+                {% for share in shares %}
+                    {% set accumulator.total = (share.stock_shares * share.stock_price) + accumulator.total %}
+                {% endfor %}
+                {% for cash in cashs %}
+                    {% set total_cash = accumulator.total + cash.cash %}
+                    {{ total_cash | usd }}
+                {% endfor %}
+                </td>
+            </tr>
+        </tfoot>
+        <tbody>
+            {% for share in shares %}
+                <tr>
+                    <td> {{ share.stock_symbol }} </td> 
+                    <td> {{ share.stock_name }} </td>
+                    <td> {{ share.stock_shares }} </td> 
+                    <td> {{ share.stock_price | usd }} </td>
+                         {% set stock_value = share.stock_shares * share.stock_price %}
+                    <td> {{ stock_value | usd }} </td>
+                    <td>
+                        <form action="/sell" method="post"> 
+                        <div class="form-group">
+                        <p><input autocomplete="off" autofocus class="form-control" value = "shares" name="shares" placeholder="Shares" type="number" min='1'></p>
+                        <button class="btn btn-primary" name = "symbol"  value = "{{ share.stock_symbol }}" type="submit">Sell</button>
+                        </div>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/buy" method="post">
+                        <div class="form-group">
+                        <p><input autocomplete="off" autofocus class="form-control" value = "shares" name="shares" placeholder="Shares" type="number" min='1'></p>
+                        <button class="btn btn-primary" name = "symbol" value = "{{ share.stock_symbol }}" type="submit">Buy</button>
+                        </div>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>CASH</td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                {% for cash in cashs %}
+                <td> {{ cash.cash | usd }} </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</main>
+{% endblock %}

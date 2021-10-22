@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    
+    
+    {% if result.name == NULL %}
+        
+        INVALID SYMBOL
+        
+    {% else %}
+    
+        A Share of {{ result.name }} ({{ result.symbol }}) costs ${{ result.price | usd }} 
+        
+    {% endif %}
+    
+{% endblock %}
